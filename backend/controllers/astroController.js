@@ -3,7 +3,7 @@ const AstroSession = require('../models/AstroSession');
 const Razorpay     = require('razorpay');
 const crypto       = require('crypto');
 
-const razorpay = new Razorpay({
+const getRazorpay = () => new Razorpay({
   key_id:     process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
@@ -131,7 +131,7 @@ exports.createBlockPayment = async (req, res) => {
   // receipt must be ≤ 40 chars — use last 8 chars of session ID + epoch seconds
   const receipt = `as_${String(session._id).slice(-8)}_${Math.floor(Date.now() / 1000)}`;
 
-  const order = await razorpay.orders.create({
+  const order = await getRazorpay().orders.create({
     amount:   Math.round(blockAmount * 100),
     currency: 'INR',
     receipt,
